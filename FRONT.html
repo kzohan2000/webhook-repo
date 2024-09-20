@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GitHub Actions Log</title>
+</head>
+<body>
+    <h1>Latest GitHub Actions</h1>
+    <div id="action-log"></div>
+
+    <script>
+        async function fetchActions() {
+            const response = await fetch('/get-latest-actions');
+            const data = await response.json();
+
+            let container = document.getElementById('action-log');
+            container.innerHTML = '';  // Clear the container
+
+            data.forEach(action => {
+                let log = document.createElement('div');
+                log.textContent = `${action.author} ${action.action_type} to ${action.to_branch} on ${new Date(action.timestamp).toLocaleString()}`;
+                container.appendChild(log);
+            });
+        }
+
+        setInterval(fetchActions, 15000);  // Fetch every 15 seconds
+        fetchActions();  // Initial fetch
+    </script>
+</body>
+</html>
