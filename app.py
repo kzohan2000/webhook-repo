@@ -25,6 +25,10 @@ def webhook():
         collection.insert_one(action_data)
         return jsonify({'message': 'Success'}), 200
     return jsonify({'message': 'No action found'}), 400
+    
+def get_latest_actions():
+    actions = list(collection.find().sort('timestamp', -1).limit(10))  # Get latest 10 actions
+    return jsonify(actions), 200
 
 if __name__ == '__main__':
     app.run(port=5000)
