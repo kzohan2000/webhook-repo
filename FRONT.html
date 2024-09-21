@@ -1,29 +1,30 @@
-<!DOCTYPE html>
 <html>
 <head>
-    <title>GitHub Actions Log</title>
-</head>
-<body>
-    <h1>Latest GitHub Actions</h1>
-    <div id="action-log"></div>
-
+    <title>Latest GitHub Actions</title>
     <script>
-        async function fetchActions() {
-            const response = await fetch('/get-latest-actions');
-            const data = await response.json();
-
-            let container = document.getElementById('action-log');
-            container.innerHTML = '';  // Clear the container
-
-            data.forEach(action => {
-                let log = document.createElement('div');
-                log.textContent = `${action.author} ${action.action_type} to ${action.to_branch} on ${new Date(action.timestamp).toLocaleString()}`;
-                container.appendChild(log);
-            });
+        async function fetchData() {
+            console.log('Fetching data...');
+            try {
+                const response = await fetch('https://3620-2401-4900-84c4-e1a7-311d-5383-259a-6464.ngrok-free.app/get-latest-actions');
+                const data = await response.json();
+                console.log('Data fetched:', data);  // Log the data to verify it was received
+                let output = "";
+                data.forEach(action => {
+                    output += `<p>${action.author} ${action.action_type} to ${action.to_branch} on ${new Date(action.timestamp)}</p>`;
+                });
+                document.getElementById("data").innerHTML = output;
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
         }
-
-        setInterval(fetchActions, 15000);  // Fetch every 15 seconds
-        fetchActions();  // Initial fetch
+        
+        // Poll every 15 seconds
+        setInterval(fetchData, 15000);
+        window.onload = fetchData;
     </script>
+</head>
+<body onload="fetchData()">
+    <h1>Latest GitHub Actions</h1>
+    <div id="data"></div>  <!-- Data will be displayed here -->
 </body>
 </html>
